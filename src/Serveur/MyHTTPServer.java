@@ -1,4 +1,4 @@
-package myhttpserver;
+package Serveur;
 
 import java.io.*;
 import java.net.*;
@@ -13,7 +13,7 @@ public class MyHTTPServer extends Thread {
 
     static final String HTML_END
             = "<li><a href='/text.txt'>Inintéressante text </a></li>"
-            + "<li><a href='/Koala.jpg'>Awesome Koala ! </a></li>"
+            + "<li><a href='/phare.jpg'>Awesome Koala ! </a></li>"
             + "</body>"
             + "</html>";
 
@@ -42,14 +42,14 @@ public class MyHTTPServer extends Thread {
             String httpMethod = tokenizer.nextToken();
             String httpQueryString = tokenizer.nextToken();
 
-            StringBuffer responseBuffer = new StringBuffer();
+            StringBuilder responseBuffer = new StringBuilder();
             responseBuffer.append("<b> This is the HTTP Server Home Page.... </b><BR>");
             responseBuffer.append("The HTTP Client request is ....<BR>");
 
             System.out.println("The HTTP request string is ....");
             while (inFromClient.ready()) {
                 // Read the HTTP complete HTTP Query
-                responseBuffer.append(requestString + "<BR>");
+                responseBuffer.append(requestString).append("<BR>");
                 System.out.println(requestString);
                 requestString = inFromClient.readLine();
             }
@@ -59,18 +59,18 @@ public class MyHTTPServer extends Thread {
                     // The default home page
                     sendResponse(200, responseBuffer.toString(), false);
                 } else {
-//This is interpreted as a file name
+                    //This is interpreted as a file name
                     String fileName = httpQueryString.replaceFirst("/", "");
                     fileName = URLDecoder.decode(fileName);
                     if (new File(fileName).isFile()) {
                         sendResponse(200, fileName, true);
                     } else {
-                        sendResponse(404, "<b>The Requested resource not found ...."
+                        sendResponse(404, "<b>ERROR 404 : The Requested resource not found ...."
                                 + "Usage: http://127.0.0.1:80 or http://127.0.0.1:80/</b>", false);
                     }
                 }
             } else {
-                sendResponse(404, "<b>The Requested resource not found ...."
+                sendResponse(404, "<b>ERROR 404 : The Requested resource not found ...."
                         + "Usage: http://127.0.0.1:80 or http://127.0.0.1:80/</b>", false);
             }
         } catch (Exception e) {
